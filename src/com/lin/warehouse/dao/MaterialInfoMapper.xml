@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lin.warehouse.dao.MaterialInfoMapper">
+
+	<resultMap type="com.lin.warehouse.domain.MaterialInfo" id="materialInfoMap">
+		<id property="id" column="id" />
+		<result property="barCode" column="barCode" />
+		<result property="materialValue" column="materialValue" />
+		<result property="x" column="x" />
+		<result property="y" column="y" />
+		<result property="z" column="z" />
+
+		<association property="material" 
+			javaType="com.lin.warehouse.domain.Material">
+			<id property="id" column="id" />
+			<result property="substance" column="substance" />
+			<result property="code" column="code" />
+			<result property="owner" column="owner" />
+			<result property="name" column="name" />
+		</association>
+	</resultMap>
+
+	<insert id="create" parameterType="com.lin.warehouse.domain.MaterialInfo">
+		insert into MaterialInfo(barCode,materialValue,x,y,z,material_id)values(#{barCode},#{materialValue},#{x},#{y},#{z},#{material.id})
+	</insert>
+
+	<select id="read" parameterType="int" resultMap="materialInfoMap">
+		select MaterialInfo.*,Material.* from MaterialInfo left outer join Material on MaterialInfo.material_id=Material.id where id=#{id}
+	</select>
+
+	<select id="readAll" resultMap="materialInfoMap">
+		select MaterialInfo.*,Material.* from MaterialInfo left outer join Material on MaterialInfo.material_id=Material.id
+	</select>
+
+	<update id="update" parameterType="com.lin.warehouse.domain.MaterialInfo">
+		update MaterialInfo set barCode=#{barCode},materialValue=#{materialValue},x=#{x},y=#{y},z=#{z} where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from MaterialInfo where id=#{id}
+	</delete>
+
+	<select id="count" resultType="int">
+		select count(*) from MaterialInfo
+	</select>
+
+</mapper>

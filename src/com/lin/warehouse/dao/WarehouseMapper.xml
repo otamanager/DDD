@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lin.warehouse.dao.WarehouseMapper">
+
+	<resultMap type="com.lin.warehouse.domain.Warehouse" id="warehouseMap">
+		<id property="id" column="warehouseId" />
+		<result property="code" column="warehouseCode" />
+		<result property="capacity" column="capacity" />
+		<result property="location" column="location" />
+		<result property="longitude" column="longitude" />
+		<result property="latitude" column="latitude" />
+
+		<collection property="materials" ofType="com.lin.warehouse.domain.Material">
+			<id property="id" column="materialId" /> 
+			<result property="substance" column="substance" />
+			<result property="code" column="materialCode" />
+			<result property="owner" column="owner" />
+			<result property="name" column="name" />
+		</collection>
+
+		<collection property="warehouseEmployees"
+			ofType="com.lin.warehouse.domain.WarehouseEmployee">
+			<id property="id" column="employeeId" />
+			<result property="name" column="employeeName" />
+			<result property="tel" column="tel" />
+			<result property="address" column="address" />
+			<result property="code" column="employeeCode" />
+		</collection>
+	</resultMap>
+
+	<insert id="create" parameterType="com.lin.warehouse.domain.Warehouse">
+		insert into
+		Warehouse(code,capacity,location,longitude,latitude)values(#{code},#{capacity},#{location},#{longitude},#{latitude})
+	</insert>
+
+	<select id="read" parameterType="int" resultMap="warehouseMap">
+		select
+			Warehouse.id warehouseId,
+			Warehouse.code warehouseCode,
+			Warehouse.capacity,
+			Warehouse.location,
+			Warehouse.longitude,
+			Warehouse.latitude,
+			Material.id materialId,
+			Material.substance,
+			Material.code materialCode,
+			Material.owner,
+			Material.name,
+			WarehouseEmployee.id employeeId,
+			WarehouseEmployee.name employeeName,
+			WarehouseEmployee.tel,
+			WarehouseEmployee.address,
+			WarehouseEmployee.code employeeCode
+		from Warehouse 
+			left outer join Material on Material.warehouse_id=Warehouse.id
+			left outer join WarehouseEmployee on Warehouse.id=WarehouseEmployee.warehouse_id
+		where Warehouse.id=#{id}
+	</select>
+	
+	<select id="readByCode" parameterType="java.util.Map" resultMap="warehouseMap">
+		select
+			Warehouse.id warehouseId,
+			Warehouse.code warehouseCode,
+			Warehouse.capacity,
+			Warehouse.location,
+			Warehouse.longitude,
+			Warehouse.latitude
+		from
+			Warehouse where code=#{code}
+	</select>
+
+	<select id="readAll" resultMap="warehouseMap">
+		select
+			Warehouse.id warehouseId,
+			Warehouse.code warehouseCode,
+			Warehouse.capacity,
+			Warehouse.location,
+			Warehouse.longitude,
+			Warehouse.latitude,
+			Material.id materialId,
+			Material.substance,
+			Material.code materialCode,
+			Material.owner,
+			Material.name,
+			WarehouseEmployee.id employeeId,
+			WarehouseEmployee.name employeeName,
+			WarehouseEmployee.tel,
+			WarehouseEmployee.address,
+			WarehouseEmployee.code employeeCode
+		from Warehouse 
+			left outer join Material on Material.warehouse_id=Warehouse.id
+			left outer join WarehouseEmployee on Warehouse.id=WarehouseEmployee.warehouse_id
+	</select>
+
+	<update id="update" parameterType="com.lin.warehouse.domain.Warehouse">
+		update Warehouse set
+		code=#{code},capacity=#{capacity},location=#{location},longitude=#{longitude},latitude=#{latitude}
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from Warehouse where
+		id=#{id}
+	</delete>
+
+	<select id="count" resultType="int">
+		select count(*) from Warehouse
+	</select>
+
+</mapper>

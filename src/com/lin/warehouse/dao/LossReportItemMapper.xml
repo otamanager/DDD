@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lin.warehouse.dao.LossReportItemMapper">
+
+	<resultMap type="com.lin.warehouse.domain.LossReportItem" id="lossReportItemMap">
+		<id property="id" column="itemId" />
+		<result property="barCode" column="barCode" />
+		<result property="substance" column="substance" />
+		<result property="warehouseCode" column="warehouseCode" />
+		<result property="name" column="name" />
+		<result property="owner" column="owner" /> 
+		<result property="lossReason" column="lossReason" />
+
+		<association property="lossReport"
+			javaType="com.lin.warehouse.domain.LossReport">
+			<id property="id" column="id" />
+			<result property="createDate" column="createDate" />
+			<result property="description" column="description" />
+			<result property="warehouseCode" column="warehouseCode" />
+			<result property="employee" column="employee" />
+		</association>
+	</resultMap>
+
+	<insert id="create" parameterType="com.lin.warehouse.domain.LossReportItem">
+		insert into LossReportItem
+		(
+		barCode,substance,warehouseCode,name,owner,lossReason,lossReport_id
+		)values(
+		#{barCode},#{substance},#{warehouseCode},#{name},#{owner},#{lossReason},#{lossReport.id})
+	</insert>
+
+	<select id="read" parameterType="int" resultMap="lossReportItemMap">
+		select
+			LossReportItem.id itemId,
+			LossReportItem.barCode,
+			LossReportItem.substance,
+			LossReportItem.warehouseCode,
+			LossReportItem.name,
+			LossReportItem.owner,
+			LossReportItem.lossReason,
+			LossReport.id,
+			LossReport.createDate,
+			LossReport.description,
+			LossReport.warehouseCode,
+			LossReport.employee
+		from
+			LossReportItem left outer join LossReport on LossReportItem.lossReport_id=LossReport.id
+		where
+			LossReportItem.id=#{id}
+	</select>
+	
+	<select id="readByLossReportId" parameterType="java.util.Map" resultMap="lossReportItemMap">
+		select
+			LossReportItem.id itemId,
+			LossReportItem.barCode,
+			LossReportItem.substance,
+			LossReportItem.warehouseCode,
+			LossReportItem.name,
+			LossReportItem.owner,
+			LossReportItem.lossReason
+		from
+			LossReportItem where lossReport_id=#{lossReport_id}
+	</select>
+
+	<select id="readAll" resultMap="lossReportItemMap">
+		select
+			LossReportItem.id itemId,
+			LossReportItem.barCode,
+			LossReportItem.substance,
+			LossReportItem.warehouseCode,
+			LossReportItem.name,
+			LossReportItem.owner,
+			LossReportItem.lossReason,
+			LossReport.id,
+			LossReport.createDate,
+			LossReport.description,
+			LossReport.warehouseCode,
+			LossReport.employee
+		from
+			LossReportItem left outer join LossReport on LossReportItem.lossReport_id=LossReport.id
+	</select>
+
+	<update id="update" parameterType="com.lin.warehouse.domain.LossReportItem">
+		update LossReportItem set barCode=#{barCode},substance=#{substance},warehouseCode=#{warehouseCode},name=#{name},owner=#{owner},lossReason=#{lossReason} where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from LossReportItem where id=#{id}
+	</delete>
+
+	<select id="count" resultType="int">
+		select count(*) from LossReportItem
+	</select>
+
+</mapper>

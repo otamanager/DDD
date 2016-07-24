@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lin.warehouse.dao.OrderItemMapper">
+
+	<resultMap type="com.lin.warehouse.domain.OrderItem" id="orderItemMap">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="count" column="count" />
+		<result property="materialValue" column="materialValue" />
+
+		<association property="orderInfo" javaType="com.lin.warehouse.domain.OrderInfo">
+			<id property="id" column="id" /> 
+			<result property="code" column="code" />
+			<result property="comeDate" column="comeDate" />
+			<result property="isSpread" column="isSpread" />
+			<result property="signature" column="signature" />
+			<result property="tackel" column="tackel" />
+			<result property="state" column="state" />
+			<result property="company" column="company" />
+			<result property="sourceLocation" column="sourceLocation" />
+			<result property="destinationLocation" column="destinationLocation" />
+			<result property="priority" column="priority" />
+			<result property="tel" column="tel" />
+			<result property="description" column="description" />
+			<result property="orderType" column="orderType" />
+			<result property="fromWarehouseCode" column="fromWarehouseCode" />
+			<result property="toWarehouseCode" column="toWarehouseCode" />
+		</association>
+
+	</resultMap>
+
+	<insert id="create" parameterType="com.lin.warehouse.domain.OrderItem">
+		insert into OrderItem(id,name,count,materialValue,order_id)values(#{id},#{name},#{count},#{materialValue},#{orderInfo.id})
+	</insert>
+
+	<select id="read" parameterType="int" resultMap="orderItemMap">
+		select OrderItem.*,OrderInfo.* from OrderItem left outer join OrderInfo on OrderItem.order_id=OrderInfo.id where OrderItem.id=#{id}
+	</select>
+
+	<select id="readAll" resultMap="orderItemMap">
+		select OrderItem.*,OrderInfo.* from OrderItem left outer join OrderInfo on OrderItem.order_id=OrderInfo.id
+	</select>
+
+	<update id="update" parameterType="com.lin.warehouse.domain.OrderItem">
+		update OrderItem set name=#{name},count=#{count},materialValue=#{materialValue} where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from OrderItem
+		where
+		id=#{id}
+	</delete>
+
+	<select id="count" resultType="int">
+		select count(*) from
+		OrderItem
+	</select>
+
+</mapper>

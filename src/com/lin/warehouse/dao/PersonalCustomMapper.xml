@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lin.warehouse.dao.PersonalCustomMapper">
+	<resultMap type="com.lin.warehouse.domain.PersonalCustom" id="personalCustomMap">
+		<id property="id" column="id" />
+		<result property="registerDate" column="registerDate" />
+		<result property="customCode" column="customCode" />
+		<result property="description" column="description" />
+		<result property="name" column="name" /> 
+		<result property="email" column="email" /> 
+		<result property="password" column="password" /> 
+		<result property="tel" column="tel" /> 
+	</resultMap>
+	
+	<insert id="create" parameterType="com.lin.warehouse.domain.PersonalCustom">
+		insert into PersonalCustom
+		(
+			registerDate,customCode,description,name,email,password,tel,actived
+		) 
+		values
+		(
+			#{registerDate},#{customCode},#{description},#{name},#{email},#{password},#{tel},#{actived}
+		)
+	</insert>
+	
+	<select id="read" parameterType="int" resultMap="personalCustomMap">
+		select
+			PersonalCustom.id,
+			PersonalCustom.registerDate,
+			PersonalCustom.customCode,
+			PersonalCustom.description,
+			PersonalCustom.name,
+			PersonalCustom.email,
+			PersonalCustom.password,
+			PersonalCustom.tel,
+			PersonalCustom.actived
+		from PersonalCustom
+		where
+			PersonalCustom.id=#{id}
+	</select>
+	
+	<select id="readByEmail" parameterType="java.util.Map" resultMap="personalCustomMap">
+		select
+			PersonalCustom.id,
+			PersonalCustom.registerDate,
+			PersonalCustom.customCode,
+			PersonalCustom.description,
+			PersonalCustom.name,
+			PersonalCustom.email,
+			PersonalCustom.password,
+			PersonalCustom.tel,
+			PersonalCustom.actived
+		from PersonalCustom
+		where
+			PersonalCustom.email=#{email}
+	</select>
+	
+	<select id="readByEmailAndPassword" parameterType="java.util.Map" resultMap="personalCustomMap">
+		select
+			PersonalCustom.id,
+			PersonalCustom.registerDate,
+			PersonalCustom.customCode,
+			PersonalCustom.description,
+			PersonalCustom.name,
+			PersonalCustom.email,
+			PersonalCustom.password,
+			PersonalCustom.tel,
+			PersonalCustom.actived
+		from PersonalCustom
+		where
+			PersonalCustom.email=#{email} and PersonalCustom.password=#{password}
+	</select>
+	
+	<select id="readAll" resultMap="personalCustomMap">
+		select
+			PersonalCustom.id,
+			PersonalCustom.registerDate,
+			PersonalCustom.customCode,
+			PersonalCustom.description,
+			PersonalCustom.name,
+			PersonalCustom.email,
+			PersonalCustom.password,
+			PersonalCustom.tel,
+			PersonalCustom.actived
+		from PersonalCustom
+	</select>
+	
+	<update id="update" parameterType="com.lin.warehouse.domain.PersonalCustom">
+		update PersonalCustom set id=#{id},registerDate=#{registerDate},customCode=#{customCode},description=#{description},name=#{name},email=#{email},password=#{password},tel=#{tel},actived=#{actived} where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from PersonalCustom where id=#{id}
+	</delete>
+
+	<select id="count" resultType="int">
+		select count(*) from PersonalCustom
+	</select>
+</mapper>

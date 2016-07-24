@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lin.warehouse.dao.InventoryReportItemMapper">
+
+	<resultMap type="com.lin.warehouse.domain.InventoryReportItem" id="inventoryReportItemMap">
+		<id property="id" column="itemId"/>
+		<result property="barCode" column="barCode" /> 
+		<result property="substance" column="substance" />
+		<result property="warehouseCode" column="warehouseCode" />
+		<result property="name" column="name" />
+		<result property="owner" column="owner" />
+		<result property="materialValue" column="materialValue"></result>
+
+		<association property="inventoryReport"
+			javaType="com.lin.warehouse.domain.InventoryReport">
+			<id property="id" column="id" />
+			<result property="code" column="code" />
+			<result property="createDate" column="createDate" />
+			<result property="description" column="description" />
+			<result property="employeeName" column="employeeName" />
+			<result property="warehouseCode" column="warehouseCode" />
+			<result property="employeeCode" column="employeeCode" />
+		</association>
+	</resultMap>
+
+	<insert id="create" parameterType="com.lin.warehouse.domain.InventoryReportItem">
+		insert into InventoryReportItem 
+		(
+			barCode,substance,warehouseCode,name,owner,materialValue,inventoryReport_id
+		) values (
+			#{barCode},#{substance},#{warehouseCode},#{name},#{owner},#{materialValue},#{inventoryReport.id}
+		)
+	</insert>
+
+	<select id="read" parameterType="int" resultMap="inventoryReportItemMap">
+		select
+			InventoryReportItem.id itemId,
+			InventoryReportItem.barCode,
+			InventoryReportItem.substance,
+			InventoryReportItem.warehouseCode,
+			InventoryReportItem.name,
+			InventoryReportItem.owner,
+			InventoryReportItem.materialValue,
+			InventoryReport.id,
+			InventoryReport.code,
+			InventoryReport.createDate,
+			InventoryReport.description,
+			InventoryReport.employeeName,
+			InventoryReport.warehouseCode,
+			InventoryReport.employeeCode
+		from 
+			InventoryReportItem 
+			left outer join InventoryReport 
+		on 
+			InventoryReportItem.inventoryReport_id=InventoryReport.id 
+		where
+			InventoryReportItem.id=#{id}
+	</select>
+	
+	<select id="readByInventoryReportId" parameterType="java.util.Map" resultMap="inventoryReportItemMap">
+		select 
+			InventoryReportItem.id itemId,
+			InventoryReportItem.barCode,
+			InventoryReportItem.substance,
+			InventoryReportItem.warehouseCode,
+			InventoryReportItem.name,
+			InventoryReportItem.owner,
+			InventoryReportItem.materialValue
+		from 
+			InventoryReportItem where inventoryReport_id=#{inventoryReport_id}
+	</select>
+
+	<select id="readAll" resultMap="inventoryReportItemMap">
+		select
+			InventoryReportItem.id itemId,
+			InventoryReportItem.barCode,
+			InventoryReportItem.substance,
+			InventoryReportItem.warehouseCode,
+			InventoryReportItem.name,
+			InventoryReportItem.owner,
+			InventoryReportItem.materialValue,
+			InventoryReport.id,
+			InventoryReport.code,
+			InventoryReport.createDate,
+			InventoryReport.description,
+			InventoryReport.employeeName,
+			InventoryReport.warehouseCode,
+			InventoryReport.employeeCode
+		from 
+			InventoryReportItem 
+			left outer join InventoryReport 
+		on 
+			InventoryReportItem.inventoryReport_id=InventoryReport.id
+	</select>
+
+	<update id="update" parameterType="com.lin.warehouse.domain.InventoryReportItem">
+		update InventoryReportItem set
+		barCode=#{barCode},substance=#{substance},warehouseCode=#{warehouseCode},name=#{name},owner=#{owner}
+		where InventoryReportItem=#{id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from InventoryReportItem
+		where id=#{id}
+	</delete>
+
+	<select id="count" resultType="int">
+		select count(*) from
+		InventoryReportItem
+	</select>
+
+</mapper>

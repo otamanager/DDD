@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lin.warehouse.dao.MaterialMapper">
+
+	<resultMap type="com.lin.warehouse.domain.Material" id="materialMap">
+		<id property="id" column="materialId" />
+		<result property="substance" column="substance" />
+		<result property="code" column="materialCode" />
+		<result property="owner" column="owner" />
+		<result property="name" column="name" /> 
+
+		<association property="warehouse" javaType="com.lin.warehouse.domain.Warehouse">
+			<id property="id" column="warehouseId" />
+			<result property="code" column="warehouseCode" />
+			<result property="capacity" column="capacity" />
+			<result property="location" column="location" />
+			<result property="longitude" column="longitude" />
+			<result property="latitude" column="latitude" />
+		</association>
+
+		<collection property="materialInfos"
+			ofType="com.lin.warehouse.domain.MaterialInfo">
+			<id property="id" column="materialInfoId" />
+			<result property="barCode" column="barCode" />
+			<result property="materialValue" column="materialValue" />
+			<result property="x" column="x" />
+			<result property="y" column="y" />
+			<result property="z" column="z" />
+		</collection>
+	</resultMap>
+
+	<insert id="create" parameterType="com.lin.warehouse.domain.Material">
+		insert into Material
+		(substance,code,owner,name,warehouse_id) values
+		(#{substance},#{code},#{owner},#{name},#{warehouse.id})
+	</insert>
+
+	<select id="read" parameterType="int" resultMap="materialMap">
+		select
+			Material.id materialId,
+			Material.substance,
+			Material.code materialCode,
+			Material.owner,
+			Material.name,
+			Warehouse.id warehouseId,
+			Warehouse.code warehouseCode,
+			Warehouse.capacity,
+			Warehouse.location,
+			Warehouse.longitude,
+			Warehouse.latitude,
+			MaterialInfo.id materialInfoId,
+			MaterialInfo.barCode,
+			MaterialInfo.materialValue,
+			MaterialInfo.x,
+			MaterialInfo.y,
+			MaterialInfo.z
+		from Material 
+			left outer join Warehouse on Material.warehouse_id=Warehouse.id
+			left outer join MaterialInfo on Material.id=MaterialInfo.material_id
+		where Material.id=#{id}
+	</select>
+	
+	<select id="readByCode" parameterType="java.util.Map" resultMap="materialMap">
+		select
+			Material.id materialId,
+			Material.substance,
+			Material.code materialCode,
+			Material.owner,
+			Material.name
+		from
+			Material where code=#{code}
+	</select>
+
+	<select id="readAll" resultMap="materialMap">
+		select
+			Material.id materialId,
+			Material.substance,
+			Material.code materialCode,
+			Material.owner,
+			Material.name,
+			Warehouse.id warehouseId,
+			Warehouse.code warehouseCode,
+			Warehouse.capacity,
+			Warehouse.location,
+			Warehouse.longitude,
+			Warehouse.latitude,
+			MaterialInfo.id materialInfoId,
+			MaterialInfo.barcode,
+			MaterialInfo.materialValue,
+			MaterialInfo.x,
+			MaterialInfo.y,
+			MaterialInfo.z
+		from Material 
+			left outer join Warehouse on Material.warehouse_id=Warehouse.id
+			left outer join MaterialInfo on Material.id=MaterialInfo.material_id
+	</select>
+
+	<update id="update" parameterType="com.lin.warehouse.domain.Material">
+		update Material set
+		substance=#{substance},code=#{code},owner=#{owner},name=#{name} where
+		id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from Material where
+		id=#{id}
+	</delete>
+
+	<select id="count" resultType="int">
+		select count(*) from Material
+	</select>
+
+</mapper>

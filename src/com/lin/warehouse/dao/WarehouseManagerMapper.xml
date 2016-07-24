@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lin.warehouse.dao.WarehouseManagerMapper">
+
+	<resultMap type="com.lin.warehouse.domain.WarehouseManager" id="warehouseManagerMap">
+		<id property="id" column="id" />
+		<result property="code" column="code" />
+		<result property="email" column="email" />
+		<result property="password" column="password" />
+	</resultMap>
+	
+	<insert id="create" parameterType="com.lin.warehouse.domain.WarehouseManager">
+		insert into
+		WarehouseManager(code,email,password)values(#{code},#{email},#{password})
+	</insert> 
+	
+	<select id="selectByEmialAndPassword" parameterType="java.util.Map" resultMap="warehouseManagerMap">
+		select * from WarehouseManager where email=#{email} and password=#{password}
+	</select>
+
+</mapper>

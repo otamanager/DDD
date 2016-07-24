@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lin.warehouse.dao.CompanyCustomMapper">
+	<resultMap type="com.lin.warehouse.domain.CompanyCustom" id="companyCustomMap">
+		<id property="id" column="id" />
+		<result property="registerDate" column="registerDate" />
+		<result property="customCode" column="customCode" />
+		<result property="description" column="description" />
+		<result property="name" column="name" /> 
+		<result property="company" column="company" /> 
+		<result property="email" column="email"/>
+		<result property="password" column="password" /> 
+		<result property="tel" column="tel" /> 
+		<result property="fax" column="fax" /> 
+		<result property="actived" column="actived"/>
+	</resultMap>
+	
+	<insert id="create" parameterType="com.lin.warehouse.domain.CompanyCustom">
+		insert into CompanyCustom
+		(
+			registerDate,customCode,description,name,company,email,password,tel,fax,actived
+		) 
+		values
+		(
+			#{registerDate},#{customCode},#{description},#{name},#{company},#{email},#{password},#{tel},#{fax},#{actived}
+		)
+	</insert>
+	
+	<select id="read" parameterType="int" resultMap="companyCustomMap">
+		select
+			CompanyCustom.id,
+			CompanyCustom.registerDate,
+			CompanyCustom.customCode,
+			CompanyCustom.description,
+			CompanyCustom.name,
+			CompanyCustom.company,
+			CompanyCustom.email,
+			CompanyCustom.password,
+			CompanyCustom.tel,
+			CompanyCustom.fax,
+			CompanyCustom.actived
+		from CompanyCustom
+		where
+			CompanyCustom.id=#{id}
+	</select>
+	
+	<select id="readByEmail" parameterType="java.util.Map" resultMap="companyCustomMap">
+		select
+			CompanyCustom.id,
+			CompanyCustom.registerDate,
+			CompanyCustom.customCode,
+			CompanyCustom.description,
+			CompanyCustom.name,
+			CompanyCustom.company,
+			CompanyCustom.email,
+			CompanyCustom.password,
+			CompanyCustom.tel,
+			CompanyCustom.fax,
+			CompanyCustom.actived
+		from CompanyCustom
+		where
+			CompanyCustom.email=#{email}
+	</select>
+	
+	<select id="readByEmailAndPassword" parameterType="java.util.Map" resultMap="companyCustomMap">
+		select
+			CompanyCustom.id,
+			CompanyCustom.registerDate,
+			CompanyCustom.customCode,
+			CompanyCustom.description,
+			CompanyCustom.name,
+			CompanyCustom.company,
+			CompanyCustom.email,
+			CompanyCustom.password,
+			CompanyCustom.tel,
+			CompanyCustom.fax,
+			CompanyCustom.actived
+		from CompanyCustom
+		where
+			CompanyCustom.email=#{email} and CompanyCustom.password=#{password}
+	</select>
+	
+	<select id="readAll" parameterType="int" resultMap="companyCustomMap">
+		select
+			CompanyCustom.id,
+			CompanyCustom.registerDate,
+			CompanyCustom.customCode,
+			CompanyCustom.description,
+			CompanyCustom.name,
+			CompanyCustom.company,
+			CompanyCustom.email,
+			CompanyCustom.password,
+			CompanyCustom.tel,
+			CompanyCustom.fax,
+			CompanyCustom.actived
+		from CompanyCustom
+	</select>
+	
+	<update id="update" parameterType="com.lin.warehouse.domain.CompanyCustom">
+		update CompanyCustom set id=#{id},registerDate=#{registerDate},customCode=#{customCode},description=#{description},name=#{name},company=#{company},email=#{email},password=#{password},tel=#{tel},fax=#{fax},actived=#{actived} where id=#{id}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		delete from CompanyCustom where CompanyCustom.id=#{id}
+	</delete>
+	
+	<select id="count" resultType="int">
+		select count(*) from CompanyCustom
+	</select>
+</mapper>

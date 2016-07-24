@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+
+	<!-- 自动扫描的包 -->
+	<context:component-scan base-package="com.lin.warehouse.controller" />
+	<context:component-scan base-package="com.lin.warehouse.rest"/>
+	
+	<mvc:annotation-driven />
+
+	<!-- SpringMVC controller 返回JSON --> 
+	<!--  
+	<bean name="viewResolver"
+		class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+	<bean name="jsonTemplate"
+		class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />-->
+	
+	
+	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver"> 
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" /> 
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	<!-- Configure to plugin JSON as request and response in method handler -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="jsonMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- Configure bean to convert JSON to POJO and vice versa -->
+    <bean id="jsonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+    </bean>	
+
+</beans>

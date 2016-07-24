@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lin.warehouse.dao.InventoryReportMapper">
+
+	<resultMap type="com.lin.warehouse.domain.InventoryReport"
+		id="inventoryReportMap">
+		<id property="id" column="inventoryReportId" />
+		<result property="code" column="code" /> 
+		<result property="createDate" column="createDate" />
+		<result property="description" column="description" />
+		<result property="employeeName" column="employeeName" />
+		<result property="warehouseCode" column="warehouseCode" />
+		<result property="employeeCode" column="employeeCode" />
+
+		<collection property="inventoryReportItems"
+			ofType="com.lin.warehouse.domain.InventoryReportItem">
+			<id property="id" column="id" />
+			<result property="barCode" column="barCode" />
+			<result property="substance" column="substance" />
+			<result property="warehouseCode" column="warehouseCode" />
+			<result property="name" column="name" />
+			<result property="owner" column="owner" />
+		</collection>
+
+	</resultMap>
+
+	<insert id="create" parameterType="com.lin.warehouse.domain.InventoryReport">
+		insert into
+		InventoryReport(code,createDate,description,employeeName,warehouseCode,employeeCode,order_id)values(#{code},#{createDate},#{description},#{employeeName},#{warehouseCode},#{employeeCode},#{orderInfo.id})
+	</insert>
+
+	<select id="read" parameterType="int" resultMap="inventoryReportMap">
+		select
+			InventoryReport.id inventoryReportId,
+			InventoryReport.code,
+			InventoryReport.createDate,
+			InventoryReport.description,
+			InventoryReport.employeeName,
+			InventoryReport.warehouseCode,
+			InventoryReport.employeeCode
+			InventoryReportItem.id,
+			InventoryReportItem.barCode,
+			InventoryReportItem.substance,
+			InventoryReportItem.warehouseCode,
+			InventoryReportItem.name,
+			InventoryReportItem.owner,
+			InventoryReportItem.materialValue
+		from
+			InventoryReport left outer join InventoryReportItem on InventoryReport.id=InventoryReportItem.inventoryReport_id
+		where 
+			InventoryReport.id=#{id}
+	</select>
+
+	<select id="readByCode" parameterType="java.util.Map" resultMap="inventoryReportMap">
+		select * from InventoryReport where code=#{code}
+	</select>
+
+	<select id="readAll" resultMap="inventoryReportMap">
+		select
+			InventoryReport.id inventoryReportId,
+			InventoryReport.code,
+			InventoryReport.createDate,
+			InventoryReport.description,
+			InventoryReport.employeeName,
+			InventoryReport.warehouseCode,
+			InventoryReport.employeeCode
+			InventoryReportItem.id,
+			InventoryReportItem.barCode,
+			InventoryReportItem.substance,
+			InventoryReportItem.warehouseCode,
+			InventoryReportItem.name,
+			InventoryReportItem.owner,
+			InventoryReportItem.materialValue
+		from
+			InventoryReport left outer join InventoryReportItem on InventoryReport.id=InventoryReportItem.inventoryReport_id
+	</select>
+
+	<update id="update" parameterType="com.lin.warehouse.domain.InventoryReport">
+		update InventoryReport set
+		code=#{code},createDate=#{createDate},description=#{description},employeeName=#{employeeName},warehouseCode=#{warehouseCode},employeeCode=#{employeeCode}
+		where COMMENT_ID=#{id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from InventoryReport
+		where id=#{id}
+	</delete>
+
+	<select id="count" resultType="int">
+		select count(*) from
+		InventoryReport
+	</select>
+
+</mapper>

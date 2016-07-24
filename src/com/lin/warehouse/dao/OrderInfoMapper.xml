@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lin.warehouse.dao.OrderInfoMapper">
+
+	<resultMap type="com.lin.warehouse.domain.OrderInfo" id="orderInfoMap">
+		<id property="id" column="orderId" /><!-- column是查询语句中查询字段的别名，不是表中的字段名 -->
+		<result property="code" column="orderCode" />
+		<result property="comeDate" column="comeDate" />
+		<result property="isSpread" column="isSpread" />
+		<result property="signature" column="signature" />
+		<result property="tackel" column="tackel" /> 
+		<result property="state" column="state" />
+		<result property="company" column="company" />
+		<result property="sourceLocation" column="sourceLocation" />
+		<result property="destinationLocation" column="destinationLocation" />
+		<result property="priority" column="priority" />
+		<result property="tel" column="tel" />
+		<result property="description" column="description" />
+		<result property="orderType" column="orderType" />
+		<result property="fromWarehouseCode" column="fromWarehouseCode" />
+		<result property="toWarehouseCode" column="toWarehouseCode" />
+		
+		<association property="lossReport"
+			javaType="com.lin.warehouse.domain.LossReport">
+			<id property="id" column="lossReportId" />
+			<result property="createDate" column="createDate" />
+			<result property="description" column="description" />
+			<result property="warehouseCode" column="warehouseCode" />
+			<result property="employee" column="employee" />
+		</association>
+
+		<association property="inventoryReport"
+			javaType="com.lin.warehouse.domain.InventoryReport">
+			<id property="id" column="inventoryReportId" /> 
+			<result property="code" column="inventoryReportCode" />
+			<result property="createDate" column="createDate" />
+			<result property="description" column="description" />
+			<result property="employeeName" column="employeeName" />
+			<result property="warehouseCode" column="warehouseCode" />
+			<result property="employeeCode" column="employeeCode" />
+		</association>
+
+		<collection property="orderItems" ofType="com.lin.warehouse.domain.OrderItem">
+			<id property="id" column="itemId" />
+			<result property="name" column="name" />
+			<result property="count" column="count" />
+			<result property="materialValue" column="materialValue" />
+		</collection>
+
+	</resultMap>
+
+	<insert id="create" parameterType="com.lin.warehouse.domain.OrderInfo">
+		insert into OrderInfo
+		(
+		code,comeDate,isSpread,signature,tackel,state,company,
+		sourceLocation,destinationLocation,priority,tel,description,
+		orderType,fromWarehouseCode,toWarehouseCode
+		)values(
+		#{code},#{comeDate},#{isSpread},#{signature},#{tackel},#{state},#{company},
+		#{sourceLocation},#{destinationLocation},#{priority},#{tel},#{description},
+		#{orderType},#{fromWarehouseCode},#{toWarehouseCode}
+		)
+	</insert>
+
+	<select id="read" parameterType="int" resultMap="orderInfoMap">
+		select 
+			OrderInfo.id orderId,
+			OrderInfo.code orderCode,
+			OrderInfo.comeDate,
+			OrderInfo.isSpread,
+			OrderInfo.signature,
+			OrderInfo.tackel,
+			OrderInfo.state,
+			OrderInfo.company,
+			OrderInfo.sourceLocation,
+			OrderInfo.destinationLocation,
+			OrderInfo.priority,
+			OrderInfo.tel,
+			OrderInfo.description,
+			OrderInfo.orderType,
+			OrderInfo.fromWarehouseCode,
+			OrderInfo.toWarehouseCode,
+			LossReport.id lossReportId,
+			LossReport.createDate,
+			LossReport.description,
+			LossReport.warehouseCode,
+			LossReport.employee,
+			InventoryReport.id inventoryReportId,
+			InventoryReport.code inventoryReportCode,
+			InventoryReport.createDate,
+			InventoryReport.description,
+			InventoryReport.employeeName,
+			InventoryReport.warehouseCode,
+			InventoryReport.employeeCode,
+			OrderItem.id itemId,
+			OrderItem.name,
+			OrderItem.count,
+			OrderItem.materialValue
+		from
+			OrderInfo
+			left outer join LossReport on OrderInfo.id=LossReport.order_id
+			left outer join InventoryReport on OrderInfo.id=InventoryReport.order_id
+			left outer join OrderItem on OrderInfo.id=OrderItem.order_id
+		where
+			OrderInfo.id=#{id}
+		order by OrderInfo.id DESC
+	</select>
+	
+	<select id="readByCode" parameterType="java.util.Map" resultMap="orderInfoMap">
+		select
+			OrderInfo.id orderId,
+			OrderInfo.code orderCode,
+			OrderInfo.comeDate,
+			OrderInfo.isSpread,
+			OrderInfo.signature,
+			OrderInfo.tackel,
+			OrderInfo.state,
+			OrderInfo.company,
+			OrderInfo.sourceLocation,
+			OrderInfo.destinationLocation,
+			OrderInfo.priority,
+			OrderInfo.tel,
+			OrderInfo.description,
+			OrderInfo.orderType,
+			OrderInfo.fromWarehouseCode,
+			OrderInfo.toWarehouseCode,
+			OrderItem.id itemId,
+			OrderItem.name,
+			OrderItem.count,
+			OrderItem.materialValue
+		from OrderInfo left outer join OrderItem on OrderInfo.id=OrderItem.order_id where code=#{code} order by OrderInfo.id DESC
+	</select>
+	
+	<select id="readByOrderType" parameterType="java.util.Map" resultMap="orderInfoMap">
+		select
+			OrderInfo.id orderId,
+			OrderInfo.code orderCode,
+			OrderInfo.comeDate,
+			OrderInfo.isSpread,
+			OrderInfo.signature,
+			OrderInfo.tackel,
+			OrderInfo.state,
+			OrderInfo.company,
+			OrderInfo.sourceLocation,
+			OrderInfo.destinationLocation,
+			OrderInfo.priority,
+			OrderInfo.tel,
+			OrderInfo.description,
+			OrderInfo.orderType,
+			OrderInfo.fromWarehouseCode,
+			OrderInfo.toWarehouseCode
+		from OrderInfo where orderType=#{orderType} order by OrderInfo.id DESC
+	</select>
+	
+	<select id="readByOrderState" parameterType="java.util.Map" resultMap="orderInfoMap">
+		select
+			OrderInfo.id orderId,
+			OrderInfo.code orderCode,
+			OrderInfo.comeDate,
+			OrderInfo.isSpread,
+			OrderInfo.signature,
+			OrderInfo.tackel,
+			OrderInfo.state,
+			OrderInfo.company,
+			OrderInfo.sourceLocation,
+			OrderInfo.destinationLocation,
+			OrderInfo.priority,
+			OrderInfo.tel,
+			OrderInfo.description,
+			OrderInfo.orderType,
+			OrderInfo.fromWarehouseCode,
+			OrderInfo.toWarehouseCode
+		from OrderInfo where state=#{state} order by OrderInfo.id DESC
+	</select>
+
+	<select id="readAll" resultMap="orderInfoMap">
+		select 
+			OrderInfo.id orderId,
+			OrderInfo.code orderCode,
+			OrderInfo.comeDate,
+			OrderInfo.isSpread,
+			OrderInfo.signature,
+			OrderInfo.tackel,
+			OrderInfo.state,
+			OrderInfo.company,
+			OrderInfo.sourceLocation,
+			OrderInfo.destinationLocation,
+			OrderInfo.priority,
+			OrderInfo.tel,
+			OrderInfo.description,
+			OrderInfo.orderType,
+			OrderInfo.fromWarehouseCode,
+			OrderInfo.toWarehouseCode,
+			LossReport.id lossReportId,
+			LossReport.createDate,
+			LossReport.description,
+			LossReport.warehouseCode,
+			LossReport.employee,
+			InventoryReport.id inventoryReportId,
+			InventoryReport.code inventoryReportCode,
+			InventoryReport.createDate,
+			InventoryReport.description,
+			InventoryReport.employeeName,
+			InventoryReport.warehouseCode,
+			InventoryReport.employeeCode,
+			OrderItem.id itemId,
+			OrderItem.name,
+			OrderItem.count,
+			OrderItem.materialValue
+		from
+			OrderInfo
+			left outer join LossReport on OrderInfo.id=LossReport.order_id
+			left outer join InventoryReport on OrderInfo.id=InventoryReport.order_id
+			left outer join OrderItem on OrderInfo.id=OrderItem.order_id order by OrderInfo.id DESC
+	</select>
+
+	<update id="update" parameterType="com.lin.warehouse.domain.OrderInfo">
+		update OrderInfo set
+		code=#{code},comeDate=#{comeDate},isSpread=#{isSpread},signature=#{signature},
+		tackel=#{tackel},state=#{state},company=#{company},sourceLocation=#{sourceLocation},
+		destinationLocation=#{destinationLocation},priority=#{priority},tel=#{tel},
+		description=#{description},orderType=#{orderType},fromWarehouseCode=#{fromWarehouseCode},
+		toWarehouseCode=#{toWarehouseCode} where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from OrderInfo where
+		id=#{id}
+	</delete>
+
+	<select id="count" resultType="int">
+		select count(*) from OrderInfo
+	</select>
+
+</mapper>

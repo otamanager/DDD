@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lin.warehouse.dao.LockReportMapper">
+
+	<resultMap type="com.lin.warehouse.domain.LockReport" id="lockReportMap">
+		<id property="id" column="id"/>
+		<result property="lockDate" column="lockDate"/>
+		<result property="warehouseCode" column="warehouseCode"/>
+		<result property="description" column="description"/> 
+	</resultMap>
+	
+	<insert id="create" parameterType="com.lin.warehouse.domain.LockReport">
+		insert into LockReport (lockDate,warehouseCode,description) values (#{lockDate},#{warehouseCode},#{description})
+	</insert>
+	
+	<select id="read" parameterType="int" resultMap="lockReportMap">
+		SELECT * FROM LockReport where id=#{id}
+	</select>
+	
+	<select id="readAll" resultMap="lockReportMap">
+		SELECT * from LockReport
+	</select>
+	
+	<update id="update" parameterType="com.lin.warehouse.domain.LockReport">
+		update LockReport set lockDate=#{lockDate},warehouseCode=#{warehouseCode},description=#{description} where id=#{id}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		delete from LockReport where id=#{id}
+	</delete>
+	
+	<select id="count" resultType="int">
+		select count(*) from LockReport
+	</select>
+
+</mapper>

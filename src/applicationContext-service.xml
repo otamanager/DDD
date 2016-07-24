@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                     http://www.springframework.org/schema/beans/spring-beans.xsd 
+                     http://www.springframework.org/schema/tx 
+                     http://www.springframework.org/schema/tx/spring-tx.xsd 
+                     http://www.springframework.org/schema/aop 
+                     http://www.springframework.org/schema/aop/spring-aop.xsd
+                     http://www.springframework.org/schema/context 
+  					 http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	<bean name="baseService" class="com.lin.warehouse.service.impl.BaseServiceImpl"
+		abstract="true"></bean>
+
+	<bean name="materialService" class="com.lin.warehouse.service.impl.MaterialServiceImpl"
+		parent="baseService">
+		<constructor-arg index="0" ref="materialMapper" />
+		<property name="materialInfoMapper" ref="materialInfoMapper"></property>
+	</bean>
+
+	<bean name="warehouseService" class="com.lin.warehouse.service.impl.WarehouseServiceImpl"
+		parent="baseService">
+		<constructor-arg index="0" ref="warehouseMapper" />
+		<property name="warehouseEmployeeMapper" ref="warehouseEmployeeMapper"></property>
+		<property name="inventoryReportItemMapper" ref="inventoryReportItemMapper"></property>
+		<property name="orderInfoMapper" ref="orderInfoMapper"></property>
+		<property name="materialMapper" ref="materialMapper"></property>
+		<property name="materialInfoMapper" ref="materialInfoMapper"></property>
+	</bean>
+
+	<bean name="orderService" class="com.lin.warehouse.service.impl.OrderServiceImpl"
+		parent="baseService">
+		<constructor-arg index="0" ref="orderInfoMapper" />
+		<property name="inventoryReportMapper" ref="inventoryReportMapper"></property>
+		<property name="inventoryReportItemMapper" ref="inventoryReportItemMapper"></property>
+		<property name="lossReportMapper" ref="lossReportMapper"></property>
+		<property name="lossReportItemMapper" ref="lossReportItemMapper"></property>
+		<property name="orderItemMapper" ref="orderItemMapper"></property>
+	</bean>
+
+	<bean name="warehouseManagerService"
+		class="com.lin.warehouse.service.impl.WarehouseManagerServiceImpl"
+		parent="baseService">
+		<constructor-arg index="0" ref="warehouseManagerMapper" />
+	</bean>
+
+	<bean name="personalCustomService"
+		class="com.lin.warehouse.service.impl.PersonalCustomServiceImpl"
+		parent="baseService">
+		<constructor-arg index="0" ref="personalCustomMapper" />
+		<property name="sender" ref="mailSender"></property>
+	</bean>
+	
+	<bean name="companyCustomService" 
+		class="com.lin.warehouse.service.impl.CompanyCustomServiceImpl"
+		parent="baseService">
+		<constructor-arg index="0" ref="companyCustomMapper" />
+		<property name="sender" ref="mailSender"></property>
+	</bean>
+
+	<!-- Spring 代理 Javamail，这里使用网易邮箱 -->
+	<!-- 注意:这里的参数(如用户名、密码)都是针对邮件发送者的 -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host">
+			<value>smtp.163.com</value>
+		</property>
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.timeout">25000</prop>
+			</props>
+		</property>
+		<!-- 使用哪个邮箱发送邮件 -->
+		<property name="username">
+			<value>linsfile@163.com</value>
+		</property>
+		<property name="password">
+			<value>zhi19940306</value>
+		</property>
+	</bean>
+
+</beans>
